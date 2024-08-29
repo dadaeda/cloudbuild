@@ -1,11 +1,11 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-docker.pkg.dev/cloud-build-demo-13/demo-flask-app/demo', '.']
+  args: ['build', '-t', 'us-docker.pkg.dev/cloud-build-demo-13/demo-flask-app/demo:$COMMIT_SHA', '.']
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-docker.pkg.dev/cloud-build-demo-13/demo-flask-app/demo']
+  args: ['push', 'us-docker.pkg.dev/cloud-build-demo-13/demo-flask-app/demo:$COMMIT_SHA']
 
-- name: 'us-docker.pkg.dev/cloud-build-demo-13/demo-flask-app/demo'
+- name: 'us-docker.pkg.dev/cloud-build-demo-13/demo-flask-app/demo:$COMMIT_SHA'
   entrypoint: 'bash'
   args:
    - '-c'
@@ -19,12 +19,12 @@ steps:
    - 'deploy'
    - 'demo-flask-app'
    - '--image'
-   - 'us-docker.pkg.dev/cloud-build-demo-13/demo-flask-app/demo'
+   - 'us-docker.pkg.dev/cloud-build-demo-13/demo-flask-app/demo:$COMMIT_SHA'
    - '--region'
    - 'us-central1'
    - '--allow-unauthenticated'
 images:
-- 'us-docker.pkg.dev/cloud-build-demo-13/demo-flask-app/demo'
+- 'us-docker.pkg.dev/cloud-build-demo-13/demo-flask-app/demo:$COMMIT_SHA'
 
 options:
   logging: CLOUD_LOGGING_ONLY
