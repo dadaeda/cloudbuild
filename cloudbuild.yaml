@@ -1,0 +1,30 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-docker.pkg.dev/cloud-build-demo-13/demo-flask-app/demo', '.']
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-docker.pkg.dev/cloud-build-demo-13/demo-flask-app/demo']
+
+- name: 'us-docker.pkg.dev/cloud-build-demo-13/demo-flask-app/demo'
+  entrypoint: 'bash'
+  args:
+   - '-c'
+   - |
+      python -m pytest
+  
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+   - 'run'
+   - 'deploy'
+   - 'demo-flask-app'
+   - '--image'
+   - 'us-docker.pkg.dev/cloud-build-demo-13/demo-flask-app/demo'
+   - '--region'
+   - 'us-central1'
+   - '--allow-unauthenticated'
+images:
+- 'us-docker.pkg.dev/cloud-build-demo-13/demo-flask-app/demo'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
